@@ -12,7 +12,7 @@ on:
 jobs:
   run_tests:
     name: Flutter ${{ matrix.flutter-version }} on ${{ matrix.device_model }} (${{ matrix.os_version }}) simulator
-    runs-on: macos-latest
+    runs-on: macos-14-large
     timeout-minutes: 40
     outputs:
       TELEGRAM_TO: 213863232
