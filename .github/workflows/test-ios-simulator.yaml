@@ -98,8 +98,7 @@ jobs:
           logpid="$!"
           sleep 10 # See https://github.com/leancodepl/patrol/issues/1282
           TESTS_EXIT_CODE=0
-          patrol test --target integration_test/example_test.dart --debug --bundle-id=com.pergiyuks.travel || TESTS_EXIT_CODE=$? 
-# patrol test --exclude ${{ env.EXCLUDED_TESTS }} --debug --bundle-id=com.pergiyuks.travel --verbose || TESTS_EXIT_CODE=$?
+          patrol test --target integration_test/example_test.dart --debug --bundle-id=com.pergiyuks.travel || TESTS_EXIT_CODE=$? # patrol test --exclude ${{ env.EXCLUDED_TESTS }} --debug --bundle-id=com.pergiyuks.travel --verbose || TESTS_EXIT_CODE=$?
           kill -SIGINT $recordingpid
           kill -SIGINT $logpid
           echo "TESTS_EXIT_CODE=$TESTS_EXIT_CODE" >> "$GITHUB_OUTPUT"
