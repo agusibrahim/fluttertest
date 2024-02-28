@@ -28,9 +28,9 @@ jobs:
       matrix:
         flutter-version: ['3.16.x']
         flutter-channel: ['stable']
-        device_model: [iPhone 14]
+        device_model: [iPhone 15 Pro]
         os: [iOS]
-        os_version: ['16.2']
+        os_version: ['17.0']
 
     defaults:
       run:
@@ -42,6 +42,11 @@ jobs:
         with:
           ssh-key: ${{ secrets.SSH_PK }}
           repository: agusibrahim/${{ inputs.targetrepo }}
+
+      - name: select xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.0.1'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -58,6 +63,7 @@ jobs:
           flutter pub get
           dart pub global activate patrol_cli
           patrol
+          /usr/bin/xcodebuild -version
 
       - name: Start iOS simulator
         uses: futureware-tech/simulator-action@v2
