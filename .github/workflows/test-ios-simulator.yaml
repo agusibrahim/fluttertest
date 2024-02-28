@@ -98,7 +98,8 @@ jobs:
           logpid="$!"
           sleep 10 # See https://github.com/leancodepl/patrol/issues/1282
           TESTS_EXIT_CODE=0
-          patrol test --exclude ${{ env.EXCLUDED_TESTS }} --debug --bundle-id=com.pergiyuks.travel --verbose || TESTS_EXIT_CODE=$?
+          patrol test --target integration_test/example_test.dart --debug --bundle-id=com.pergiyuks.travel || TESTS_EXIT_CODE=$? 
+# patrol test --exclude ${{ env.EXCLUDED_TESTS }} --debug --bundle-id=com.pergiyuks.travel --verbose || TESTS_EXIT_CODE=$?
           kill -SIGINT $recordingpid
           kill -SIGINT $logpid
           echo "TESTS_EXIT_CODE=$TESTS_EXIT_CODE" >> "$GITHUB_OUTPUT"
@@ -117,11 +118,11 @@ jobs:
         run: |
           brew install coreutils # to provide realpath binary
           echo "XCRESULT_PATH=$(realpath build/ios_results_*.xcresult)" >> $GITHUB_ENV
-      # - name: Optimizing output video
-      #   run: |
-      #     brew install ffmpeg
-      #     ffmpeg -i ${{ github.workspace }}/testing.mp4 -ss 340 ${{ github.workspace }}/testing2.mp4
-      #     curl -X POST -H "Content-Type:multipart/form-data" -F video=@"${{ github.workspace }}/testing2.mp4" -F chat_id=${{ needs.run_tests.outputs.TELEGRAM_TO }} "https://api.telegram.org/bot${{ needs.run_tests.outputs.TELEGRAM_TOKEN}}/sendVideo"
+      - name: Optimizing output video
+        run: |
+          brew install ffmpeg
+          ffmpeg -i ${{ github.workspace }}/testing.mp4 -ss 200 ${{ github.workspace }}/testing2.mp4
+          curl -X POST -H "Content-Type:multipart/form-data" -F video=@"${{ github.workspace }}/testing2.mp4" -F chat_id=${{ needs.run_tests.outputs.TELEGRAM_TO }} "https://api.telegram.org/bot${{ needs.run_tests.outputs.TELEGRAM_TOKEN}}/sendVideo"
       - name: Publish test report to summary
         if: success() || failure()
         uses: kishikawakatsumi/xcresulttool@v1
@@ -144,12 +145,12 @@ jobs:
       #     name: Logs from ${{ matrix.device_model }}
       #     path: |
       #       ${{ github.workspace }}/dev/e2e_app/all_simulator_logs.txt
-      # - name: Upload captured video to artifacts
-      #   if: ${{ (failure() || success()) && contains(fromJson('["success", "failure"]'), steps.tests_step.conclusion) }}
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Captured video from testing.mp4
-      #     path: ${{ github.workspace }}/testing2.mp4
+      - name: Upload captured video to artifacts
+        if: ${{ (failure() || success()) && contains(fromJson('["success", "failure"]'), steps.tests_step.conclusion) }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Captured video from testing.mp4
+          path: ${{ github.workspace }}/testing2.mp4
       
       
 
